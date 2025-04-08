@@ -13,12 +13,15 @@ if platform.system() == "Windows":
 
 class Text():
     def __init__(self, path):
-        self.word = "Hello"
-        self.path = path
-
-    def prep(self):
         self.root = tk.Tk()
         self.root.withdraw()  # Hide main window
+        self.word = "Hello"
+        self.path = path
+        self.size_control = 50
+        self.x_control = int((self.root.winfo_screenwidth() - self.size_control * len(self.word))/2)
+        self.y_control = int((self.root.winfo_screenheight() - self.size_control)/2)
+        
+    def prep(self):
         self.size = random.randint(2, 100)
         self.x = random.randint(0, self.root.winfo_screenwidth() - self.size * len(self.word))
         self.y = random.randint(0, self.root.winfo_screenheight() - self.size)
@@ -44,6 +47,26 @@ class Text():
 
         self.root.after(2000, self.root.destroy)
         self.root.mainloop()
+    
+    def control(self):
+        window = tk.Toplevel(self.root)
+        window.overrideredirect(True)
+        window.geometry(f"{self.size_control * len(self.word)}x{self.size_control}+{self.x_control}+{self.y_control}")
+
+        label = tk.Label(window, text=self.word, font=("Arial", self.size_control))
+        label.pack()
+
+        self.root.after(2000, window.destroy)  # Destroy after 2 seconds
+
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        log_text = f"Timestamp: {timestamp}, Location: ({self.x_control}, {self.y_control}), Size: {self.size}\n"
+        print(log_text)
+
+        with open(self.path + "log.txt", "a") as log:
+            log.write(log_text)
+
+        # self.root.after(2000, self.root.destroy)
+        # self.root.mainloop()
 
 class Video:
     def __init__(self, path):
@@ -120,6 +143,7 @@ if __name__ == "__main__":
     try: 
         while True:
             label = display.prep()
+            display.control()
             media.start(label)
             time.sleep(1)
             display.show()

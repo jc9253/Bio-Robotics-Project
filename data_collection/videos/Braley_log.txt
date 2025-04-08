@@ -1,0 +1,7 @@
+Timestamp: 2025-03-31 18:48:06, Location: (835, 515), Size: 41
+Timestamp: 2025-03-31 18:48:43, Location: (835, 515), Size: 14
+Timestamp: 2025-03-31 18:48:44, Location: (955, 63), Size: 14
+Timestamp: 2025-03-31 18:49:14, Location: (835, 515), Size: 29
+Timestamp: 2025-03-31 18:49:16, Location: (1191, 759), Size: 29
+Timestamp: 2025-03-31 18:49:38, Location: (835, 515), Size: 73
+Timestamp: 2025-03-31 18:49:42, Location: (185, 943), Size: 73
