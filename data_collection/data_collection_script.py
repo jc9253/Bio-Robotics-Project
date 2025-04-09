@@ -12,61 +12,59 @@ if platform.system() == "Windows":
     windll.user32.SetProcessDPIAware()
 
 class Text():
-    def __init__(self, path):
+    def __init__(self, subject):
+        self.word = "Hello"
+        self.subject = subject
+    
+    def _start_root(self):
         self.root = tk.Tk()
         self.root.withdraw()  # Hide main window
-        self.word = "Hello"
-        self.path = path
-        self.size_control = 50
-        self.x_control = int((self.root.winfo_screenwidth() - self.size_control * len(self.word))/2)
-        self.y_control = int((self.root.winfo_screenheight() - self.size_control)/2)
-        
+        self.window = tk.Toplevel(self.root)
+        self.window.overrideredirect(True)
+
+
     def prep(self):
-        self.size = random.randint(2, 100)
+        self._start_root()
+        
+        self.size = random.randint(25, 200)
         self.x = random.randint(0, self.root.winfo_screenwidth() - self.size * len(self.word))
         self.y = random.randint(0, self.root.winfo_screenheight() - self.size)
 
+        self.size_control = 100
+        self.x_control = int((self.root.winfo_screenwidth() - self.size_control * len(self.word)) / 2)
+        self.y_control = int((self.root.winfo_screenheight() - self.size_control) / 2)
+
         return f'{self.size}_{self.x}_{self.y}'
+    
+    def show_control(self):
+        self.window.geometry(f"{self.size_control * len(self.word)}x{self.size_control}+{self.x_control}+{self.y_control}")
 
-    def show(self):
-        window = tk.Toplevel(self.root)
-        window.overrideredirect(True)
-        window.geometry(f"{self.size * len(self.word)}x{self.size}+{self.x}+{self.y}")
-
-        label = tk.Label(window, text=self.word, font=("Arial", self.size))
+        label = tk.Label(self.window, text=self.word, font=("Arial", self.size_control))
         label.pack()
 
-        self.root.after(2000, window.destroy)  # Destroy after 2 seconds
+        # self.root.after(2000, self.window.destroy)  # Destroy after 2 seconds
+
+        self.root.after(2000, self.root.destroy)
+        self.root.mainloop()
+
+    def show(self):
+        self._start_root()
+        self.window.geometry(f"{self.size * len(self.word)}x{self.size}+{self.x}+{self.y}")
+
+        label = tk.Label(self.window, text=self.word, font=("Arial", self.size))
+        label.pack()
+
+        self.root.after(2000, self.window.destroy)  # Destroy after 2 seconds
 
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         log_text = f"Timestamp: {timestamp}, Location: ({self.x}, {self.y}), Size: {self.size}\n"
         print(log_text)
 
-        with open(self.path + "log.txt", "a") as log:
+        with open(self.subject + "log.txt", "a") as log:
             log.write(log_text)
 
         self.root.after(2000, self.root.destroy)
         self.root.mainloop()
-    
-    def control(self):
-        window = tk.Toplevel(self.root)
-        window.overrideredirect(True)
-        window.geometry(f"{self.size_control * len(self.word)}x{self.size_control}+{self.x_control}+{self.y_control}")
-
-        label = tk.Label(window, text=self.word, font=("Arial", self.size_control))
-        label.pack()
-
-        self.root.after(2000, window.destroy)  # Destroy after 2 seconds
-
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        log_text = f"Timestamp: {timestamp}, Location: ({self.x_control}, {self.y_control}), Size: {self.size}\n"
-        print(log_text)
-
-        with open(self.path + "log.txt", "a") as log:
-            log.write(log_text)
-
-        # self.root.after(2000, self.root.destroy)
-        # self.root.mainloop()
 
 class Video:
     def __init__(self, path):
@@ -138,18 +136,23 @@ class Photo():
 if __name__ == "__main__":
     subject = "Braley_"
     media = Video(path="videos/" + subject)
-    display = Text(path="videos/" + subject)
+    display = Text(subject)
 
     try: 
         while True:
             label = display.prep()
-            display.control()
             media.start(label)
-            time.sleep(1)
+
+            display.show_control()
+            # time.sleep(3)
+
             display.show()
-            time.sleep(2)
+            time.sleep(3)
+
             media.stop()
+
     except KeyboardInterrupt:
         pass
+   
 
     print("Complete")
