@@ -7,12 +7,15 @@ import matplotlib
 matplotlib.use("Agg")  # Non-interactive backend that supports file output
 import multiprocessing
 from multiprocessing import Manager, Pool
+from pathlib import Path
 
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pypupilext as pp
+
+# from avitobmp import convert_avi
 
 
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -69,28 +72,15 @@ def Pupil_outline(img, ax=None):
     resize = ResizeWithAspectRatio(img_plot, width=800)
 
     return resize
-    # fig = plt.figure(figsize=(20, 8))
-    # ax1 = plt.subplot(1, 2, 1)
-    # im = ax.imshow(cv2.cvtColor(resize, cv2.COLOR_BGR2RGB))
-    # fig.tight_layout()
-    # ax.figure.canvas.draw()
-
-    return im
-    # If you want to show the image using an opencv window instead of matplotlib
-    # cv2.imshow("window", resize)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-    # cv2.waitKey(1)
 
 
-def process_frame(file, return_dict):
-    img_path = os.path.join(PATH, file)
+def process_frame(img_path, return_dict):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None or img.size == 0:
-        print(f"Warning: {file} could not be read. Skipping...")
+        print(f"Warning: {img_path.name} could not be read. Skipping...")
         return None
     processed_img = Pupil_outline(img)
-    return_dict[file] = processed_img
+    return_dict[img_path.stem] = processed_img
 
 
 def convert_frames(frame_data):
@@ -99,14 +89,16 @@ def convert_frames(frame_data):
     # frame = ax.imshow(cv2.cvtColor(resize, cv2.COLOR_BGR2RGB))
 
 
-PATH = "./tests/Single_camera_recording_1"
+PATH = "../data_collection/video_frame/Jessie_37_1513_443"
+
+dir_path = Path(PATH)
 # Plot definition
 fig, ax = plt.subplots(figsize=(20, 8))
 
 manager = Manager()
 return_dict = manager.dict()
 
-files = [file for file in os.listdir(PATH) if file.endswith(".bmp")]  # filters for bmps
+files = list(dir_path.rglob("*.bmp"))  # filters for bmps
 # Pupil_outline(img)
 
 cpu_count = multiprocessing.cpu_count()
@@ -124,11 +116,10 @@ for frame in frame_results:
     frame = ax.imshow(frame)
     frames.append([frame])
 
-
 ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True, repeat_delay=1000)
 
 # fig.canvas.draw()  # Initialize the canvas drawing
 print("Exporting Video")
-ani.save("sample.mp4")
+ani.save(os.path.join(PATH, "sample.mp4"))
 print("success!")
 # plt.show()
