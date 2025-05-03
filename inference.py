@@ -1,9 +1,3 @@
-import sys
-import os
-
-# Add the project root directory to sys.path to run packages from other directories
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import time
 from zoom_ctrl import zoom_interface
 from data_collection.data_collection_script import Video 
