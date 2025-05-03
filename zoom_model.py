@@ -83,7 +83,7 @@ def infer(model, input_tensor, device):
     with torch.no_grad():
         input_tensor = input_tensor.to(device)
         output = model(input_tensor.unsqueeze(0))  # Add batch dim
-        return output.item()
+        return output.squeeze().detach().cpu().numpy()
 
 
 def make_training(labels, features, BATCH_SIZE):
@@ -109,9 +109,12 @@ def make_training(labels, features, BATCH_SIZE):
 
 
 if __name__ == "__main__":
+    num_features = 18
+    sequnce_len = 60
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = ZoomModel(num_features=18).to(device)
+    model = ZoomModel(num_features=num_features).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     loss_fn = nn.MSELoss()
     epochs = 20
@@ -136,40 +139,40 @@ if __name__ == "__main__":
     loc_y = log.loc[:, "loc_y"]
     labels = [size, loc_x, loc_y]
 
-    train_loader, val_loader = make_training(labels, features, batch_size)
+    # train_loader, val_loader = make_training(labels, features, batch_size)
 
-    l = []
-    v = []
+    # l = []
+    # v = []
 
-    for epoch in range(epochs):
-        print(f"Epoch {epoch+1}\n-------------------------------")
-        loss = train_model(model, train_loader, loss_fn, optimizer, device)
-        validation = test(model, val_loader, loss_fn, device)
-        l.append(loss)
-        v.append(validation)
-        print(f"Train={loss:.4f}, Val={validation:.4f}")
+    # for epoch in range(epochs):
+    #     print(f"Epoch {epoch+1}\n-------------------------------")
+    #     loss = train_model(model, train_loader, loss_fn, optimizer, device)
+    #     validation = test(model, val_loader, loss_fn, device)
+    #     l.append(loss)
+    #     v.append(validation)
+    #     print(f"Train={loss:.4f}, Val={validation:.4f}")
 
-    torch.save(model.state_dict(), "zoom_model.pth")  # Save model
+    # torch.save(model.state_dict(), "zoom_model.pth")  # Save model
 
-    """ Plot Validation loss curve """
+    # """ Plot Validation loss curve """
 
-    e = [i for i in range(epochs)]
+    # e = [i for i in range(epochs)]
 
-    min_len = min(len(e), len(l), len(v))
+    # min_len = min(len(e), len(l), len(v))
 
-    e = e[:min_len]
-    l = l[:min_len]
-    v = v[:min_len]
+    # e = e[:min_len]
+    # l = l[:min_len]
+    # v = v[:min_len]
 
-    plt.plot(e, l)
-    plt.plot(e, v)
-    plt.legend(["Validation", "Loss"])
-    plt.title("Validation Loss Curve")
-    plt.xlabel("epochs")
-    plt.show()
+    # plt.plot(e, l)
+    # plt.plot(e, v)
+    # plt.legend(["Validation", "Loss"])
+    # plt.title("Validation Loss Curve")
+    # plt.xlabel("epochs")
+    # plt.show()
 
-    # Load and infer
-    model.load_state_dict(torch.load("zoom_model.pth"))
-    sample_input = torch.randn(60, 10)  # Random input
+    # # Load and infer
+    # model.load_state_dict(torch.load("zoom_model.pth"))
+    sample_input = torch.randn(sequnce_len, num_features)  # Random input
     result = infer(model, sample_input, device)
     print("Zoom Prediction:", result)
