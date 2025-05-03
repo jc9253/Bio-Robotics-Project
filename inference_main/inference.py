@@ -22,6 +22,11 @@ recording = camera.start()
 camera.stop()
 
 # Run through preprocessing
+# Returns features which is a time series of:
+# - pupil size
+# -
+# - 
+
 features = pre_processing.?(recording)
 
 # Send to zoom and location models
