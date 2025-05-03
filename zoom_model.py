@@ -13,6 +13,9 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 from torchvision import transforms
 
+from torch.utils.data import TensorDataset
+from torch.utils.data import random_split
+
 
 class ZoomModel(nn.Module):
     def __init__(self, num_features=10):
@@ -25,14 +28,15 @@ class ZoomModel(nn.Module):
             nn.Linear(64, 64),  # Extract out features
             nn.ReLU(),
             nn.Dropout(0.25),  # prevent overfitting
-            nn.Linear(64, 1),
+            # TODO: THIS IS FOR SINGLE MODEL AT OUTPUT, CHANGE WHEN JACK'S IS READY
+            nn.Linear(64, 3),
             nn.Sigmoid(),  # Want single value between 1 and 0
         )
 
     def forward(self, x):
         lstm_out, _ = self.lstm(x)
         # Need to grab output of the last LSTM Stage
-        final_timestep = lstm_out[:, -1, :]  # [batch_size, hidden_size]
+        final_timestep = lstm_out[:, -1]  # , :]  # [batch_size, hidden_size]
         out = self.fully_connected(final_timestep)
         return out
 
@@ -84,13 +88,21 @@ def infer(model, input_tensor, device):
 
 def make_training(labels, features, BATCH_SIZE):
 
-    train_set = [labels, features]
+    # Need as tensors
+
+    features_tensor = torch.tensor(features, dtype=torch.float32)
+    labels_tensor = torch.tensor(np.stack(labels, axis=1), dtype=torch.float32)
+    dataset = TensorDataset(features_tensor, labels_tensor)
+
+    train_size = int(0.8 * len(dataset))
+    val_size = len(dataset) - train_size
+    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 
     train_dataloader = DataLoader(
-        train_set, batch_size=BATCH_SIZE, drop_last=True, shuffle=True
+        train_dataset, batch_size=BATCH_SIZE, drop_last=True, shuffle=True
     )
     test_dataloader = DataLoader(
-        train_set, batch_size=BATCH_SIZE, drop_last=False, shuffle=True
+        val_dataset, batch_size=BATCH_SIZE, drop_last=False, shuffle=True
     )
 
     return train_dataloader, test_dataloader
@@ -99,7 +111,7 @@ def make_training(labels, features, BATCH_SIZE):
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = ZoomModel(num_features=10).to(device)
+    model = ZoomModel(num_features=18).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     loss_fn = nn.MSELoss()
     epochs = 20
@@ -107,9 +119,22 @@ if __name__ == "__main__":
 
     """ Load Labeled Data"""
 
-    features = pd.read_csv("PupilExtraction/output.csv")
-    norm_size, loc_x, loc_y = [], [], []
-    labels = [norm_size, loc_x, loc_y]
+    df = pd.read_csv("PupilExtraction/output.csv")
+
+    # print(df.columns)
+
+    features = [row.to_numpy(dtype=np.float32) for _, row in df.iterrows()]
+
+    # num_features = len(features)
+
+    log = pd.read_csv("data_collection/Braley_log.csv")
+    # print(log.to_string)
+    # print(log.columns)
+
+    size = log.loc[:, "Size"]
+    loc_x = log.loc[:, "loc_x"]
+    loc_y = log.loc[:, "loc_y"]
+    labels = [size, loc_x, loc_y]
 
     train_loader, val_loader = make_training(labels, features, batch_size)
 
