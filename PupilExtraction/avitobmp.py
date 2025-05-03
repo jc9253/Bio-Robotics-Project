@@ -3,11 +3,11 @@ from pathlib import Path
 
 import cv2
 
-
 def convert_avi(video_path, output_dir):
     video_path = Path(video_path)
     output_dir = Path(output_dir)
     os.makedirs(output_dir, exist_ok=True)
+    print(video_path)
 
     for file_path in video_path.rglob("*.avi"):
         print(f"reading file: {file_path}")

@@ -66,7 +66,7 @@ class Text():
         self.root.mainloop()
 
 class Video:
-    def __init__(self, path):
+    def __init__(self, path, do_thread):
         try: 
             self.stop()
         except:
@@ -76,6 +76,7 @@ class Video:
         self.out = None
         self.recording = False
         self.thread = None
+        self.do_thread = True
 
     def _record(self):
         print("recording")
@@ -96,14 +97,17 @@ class Video:
         fourcc = cv2.VideoWriter_fourcc(*"XVID")
         self.out = cv2.VideoWriter(self.path + file_name + ".avi", fourcc, 20.0, (640, 480))
         self.recording = True
-        self.thread = threading.Thread(target=self._record, daemon=True)
-        self.thread.start()
+
+        if self.do_thread:
+            self.thread = threading.Thread(target=self._record, daemon=True)
+            self.thread.start()
 
     def stop(self):
         print("Stopped")
         self.recording = False
-        if self.thread:
-            self.thread.join()
+        if self.do_thread:
+            if self.thread:
+                self.thread.join()
 
         if self.out:
             self.out.release()
@@ -139,7 +143,7 @@ class Photo():
 
 if __name__ == "__main__":
     subject = "videos/" + "Braley_"
-    media = Video(path=subject)
+    media = Video(path=subject, do_thread=True)
     display = Text(subject)
 
     print("Starting session")

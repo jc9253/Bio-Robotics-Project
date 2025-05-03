@@ -1,12 +1,14 @@
 import time
 from data_collection.data_collection_script import Video 
-# from pupilextraction import ?
+from PupilExtraction.avitobmp import convert_avi
 # from location_model.?
 # from zoom_model.?
 from zoom_ctrl import zoom_interface
 
 # init objects:
-camera = Video(path="person_0")
+avi_path = "video"
+bmap_folder = "bmap/"
+camera = Video(path=avi_path, do_thread=False)
 ''' ####testing zoom control###
 feature_extrac = ?()
 
@@ -25,6 +27,8 @@ try:
         recording = camera.start("") #unlabeled since inference
         time.sleep(2)
         camera.stop()
+
+        convert_avi("", bmap_folder) #convert avi to bit map
 
         ''' ####testing zoom control###
         # Run through preprocessing
