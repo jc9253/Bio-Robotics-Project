@@ -78,6 +78,7 @@ class Video:
         self.thread = None
 
     def _record(self):
+        print("recording")
         while self.recording:
             ret, frame = self.cap.read()
             if ret:
@@ -87,6 +88,7 @@ class Video:
                     break
 
     def start(self, file_name):
+        print("started")
         self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
             messagebox.showerror("Error", "Cannot access the webcam")
@@ -98,6 +100,7 @@ class Video:
         self.thread.start()
 
     def stop(self):
+        print("Stopped")
         self.recording = False
         if self.thread:
             self.thread.join()
@@ -135,8 +138,8 @@ class Photo():
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    subject = "Braley_"
-    media = Video(path="videos/" + subject)
+    subject = "videos/" + "Braley_"
+    media = Video(path=subject)
     display = Text(subject)
 
     print("Starting session")
