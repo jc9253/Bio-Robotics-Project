@@ -1,8 +1,14 @@
+#requires: pyautogui pynput, pyqinauto keyboard
+import pyautogui
+import platform
+from pynput.keyboard import Controller as KeyController, Key
 
-
-class zoom ():
-    def __init(self):
-        pass
+class zoom_interface ():
+    def __init__(self):
+        self.os = platform.system().lower()
+        from pynput.mouse import Controller as MouseController
+        self.mouse = MouseController()
+        self.kb = KeyController()
 
     def zoom(self, loc, mag):
         # Set center of zoom
@@ -13,49 +19,16 @@ class zoom ():
             self.zoom_in()
         elif (mag >= 0):
             self.zoom_out()
-
-
-class win_os(zoom):
-    def __init__(self):
-        # import pywinauto
-        return NotImplemented
-    
+            
     def zoom_center(self, loc):
-        return NotImplemented
-    
-    def zoom_in(self):
-        return NotImplemented
-    
-    def zoom_out(self):
-        return NotImplemented
-    
-        # pywinauto.keyboard.send_keys("{VK_CONTROL down}")
-        # pywinauto.keyboard.send_keys("{+ down}")
-        # pywinauto.keyboard.send_keys("{+ up}")
-        # pywinauto.keyboard.send_keys("{VK_CONTROL up}")
+        # Move the mouse to the desired location
+        x, y = loc
+        pyautogui.moveTo(x, y)
 
-class mac_os(zoom):
-    def __init__(self):
-        return NotImplemented
-    
-    def zoom_center(self, loc):
-        return NotImplemented
-    
     def zoom_in(self):
-        return NotImplemented
-    
-    def zoom_out(self):
-        return NotImplemented
-
-class lin_os(zoom):
-    def __init__(self):
-        return NotImplemented
-    
-    def zoom_center(self, loc):
-        return NotImplemented
-    
-    def zoom_in(self):
-        return NotImplemented
+        with self.kb.pressed(Key.ctrl):
+            self.mouse.scroll(0, 2)  # Scroll up to zoom in
 
     def zoom_out(self):
-        return NotImplemented
+         with self.kb.pressed(Key.ctrl):
+            self.mouse.scroll(0, -2)  # Scroll down to zoom out
