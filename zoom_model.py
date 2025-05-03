@@ -17,7 +17,7 @@ from torch.utils.data import TensorDataset
 from torch.utils.data import random_split
 
 
-class ZoomModel(nn.Module):
+class zoom_model(nn.Module):
     def __init__(self, num_features=10):
         self.num_features = num_features  # From dataframe
         super().__init__()
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = ZoomModel(num_features=num_features).to(device)
+    model = zoom_model(num_features=num_features).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     loss_fn = nn.MSELoss()
     epochs = 20

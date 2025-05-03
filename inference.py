@@ -3,22 +3,37 @@ import pandas as pd
 from data_collection.data_collection_script import Video
 from PupilExtraction.avitobmp import convert_avi
 
+import torch
+from torch import nn
+
+from torch.utils.data import DataLoader
+from torchvision import datasets
+from torchvision.transforms import ToTensor
+from torchvision import transforms
+
+from torch.utils.data import TensorDataset
+from torch.utils.data import random_split
+
 # from location_model.?
-from zoom_model import zoom_model
+from zoom_model import zoom_model as zm
+import zoom_model
 from zoom_ctrl import zoom_interface
 
 if __name__ == "__main__":
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     # init objects:
     avi_path = "video"
     bmap_folder = "bmap/"
     camera = Video(path=avi_path, do_thread=False)
-    """ ####testing zoom control###
-    feature_extrac = ?()
 
-    loc_model = ?()
-    zoom_model = ?()
+    num_features = 18
+    sequnce_len = 60
 
-    """  ####testing zoom control###
+    model = zm(num_features=num_features).to(device)
+    # TODO: MAKE SURE TO UNCOMMENT AFTER TRAINING!!!!
+    # model.load_state_dict(torch.load("zoom_model.pth"))
+
     os_zoom = zoom_interface()
 
     ## MAIN LOOP ##
@@ -42,17 +57,17 @@ if __name__ == "__main__":
             features = feature_extrac.?(recording)
             """  ####testing zoom control###
 
-            features = pd.read_csv("PupilExtraction/output.csv")
+            # features = pd.read_csv("PupilExtraction/output.csv")
             # print(features.iloc[0])
 
-            """ ####testing zoom control###
-            # Send features to zoom and location models
-            loc = loc_model.infer(features)
-            """  ####testing zoom control###
-            mag = zoom_model.infer(features)
+            features = torch.randn(
+                sequnce_len, num_features
+            )  # Random input = torch.randn(sequnce_len, num_features)  # Random input
 
-            loc = [0.5, 0.5]
-            mag = 0
+            size, loc_x, loc_y = zoom_model.infer(model, features, device)
+
+            loc = [loc_x, loc_y]
+            mag = size
 
             # Send location and zooom to zoom_interface
             os_zoom.zoom(loc=loc, mag=mag)
