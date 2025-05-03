@@ -30,8 +30,8 @@ mag = zoom_model.infer(features)
 
 '''
 
-loc = [0, 0]
-mag = 0
+loc = [0.5, 0.5]
+mag = -5
 
 # Send location and zooom to zoom_interface
 
