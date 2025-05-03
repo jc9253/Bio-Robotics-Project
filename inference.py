@@ -28,11 +28,10 @@ if __name__ == "__main__":
     camera = Video(path=avi_path, do_thread=False)
 
     num_features = 18
-    sequnce_len = 60
+    sequnce_len = 25
 
     model = zm(num_features=num_features).to(device)
-    # TODO: MAKE SURE TO UNCOMMENT AFTER TRAINING!!!!
-    # model.load_state_dict(torch.load("zoom_model.pth"))
+    model.load_state_dict(torch.load("zoom_model.pth"))
 
     os_zoom = zoom_interface()
 
@@ -41,9 +40,9 @@ if __name__ == "__main__":
         while True:
 
             # Take input data
-            # recording = camera.start("")  # unlabeled since inference
-            # time.sleep(2)
-            # camera.stop()
+            recording = camera.start("")  # unlabeled since inference
+            time.sleep(2)
+            camera.stop()
 
             convert_avi("", bmap_folder)  # convert avi to bit map
 
@@ -57,12 +56,9 @@ if __name__ == "__main__":
             features = feature_extrac.?(recording)
             """  ####testing zoom control###
 
-            # features = pd.read_csv("PupilExtraction/output.csv")
-            # print(features.iloc[0])
-
-            features = torch.randn(
-                sequnce_len, num_features
-            )  # Random input = torch.randn(sequnce_len, num_features)  # Random input
+            features = pd.read_csv("PupilExtraction/output.csv")
+            features = torch.from_numpy(features.values)
+            features = features.float()
 
             size, loc_x, loc_y = zoom_model.infer(model, features, device)
 
@@ -71,6 +67,8 @@ if __name__ == "__main__":
 
             # Send location and zooom to zoom_interface
             os_zoom.zoom(loc=loc, mag=mag)
+
+            break
 
     except KeyboardInterrupt:
         print("Complete")
