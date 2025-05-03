@@ -89,37 +89,42 @@ def convert_frames(frame_data):
     # frame = ax.imshow(cv2.cvtColor(resize, cv2.COLOR_BGR2RGB))
 
 
-PATH = "../data_collection/video_frame/Jessie_37_1513_443"
+if __name__ == "__main__":
+    print("Running Pupil extract")
 
-dir_path = Path(PATH)
-# Plot definition
-fig, ax = plt.subplots(figsize=(20, 8))
+    PATH = "../data_collection/video_frame/Jessie_37_1513_443"
 
-manager = Manager()
-return_dict = manager.dict()
+    dir_path = Path(PATH)
+    # Plot definition
+    fig, ax = plt.subplots(figsize=(20, 8))
 
-files = list(dir_path.rglob("*.bmp"))  # filters for bmps
-# Pupil_outline(img)
+    manager = Manager()
+    return_dict = manager.dict()
 
-cpu_count = multiprocessing.cpu_count()
-with Pool(processes=cpu_count) as pool:
-    pool.starmap(process_frame, [(file, return_dict) for file in files])
+    files = list(dir_path.rglob("*.bmp"))  # filters for bmps
+    # Pupil_outline(img)
 
-frame_data = sorted(return_dict.items(), key=lambda x: x[0])
-frame_data = [frame for _, frame in frame_data if frame is not None]
+    cpu_count = multiprocessing.cpu_count()
+    with Pool(processes=cpu_count) as pool:
+        pool.starmap(process_frame, [(file, return_dict) for file in files])
 
-with Pool(processes=cpu_count) as pool:
-    frame_results = pool.map(convert_frames, frame_data)
+    frame_data = sorted(return_dict.items(), key=lambda x: x[0])
+    frame_data = [frame for _, frame in frame_data if frame is not None]
 
-frames = []
-for frame in frame_results:
-    frame = ax.imshow(frame)
-    frames.append([frame])
+    with Pool(processes=cpu_count) as pool:
+        frame_results = pool.map(convert_frames, frame_data)
 
-ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True, repeat_delay=1000)
+    frames = []
+    for frame in frame_results:
+        frame = ax.imshow(frame)
+        frames.append([frame])
 
-# fig.canvas.draw()  # Initialize the canvas drawing
-print("Exporting Video")
-ani.save(os.path.join(PATH, "sample.mp4"))
-print("success!")
-# plt.show()
+    ani = animation.ArtistAnimation(
+        fig, frames, interval=50, blit=True, repeat_delay=1000
+    )
+
+    # fig.canvas.draw()  # Initialize the canvas drawing
+    print("Exporting Video")
+    ani.save(os.path.join(PATH, "sample.mp4"))
+    print("success!")
+    # plt.show()

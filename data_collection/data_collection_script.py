@@ -9,13 +9,15 @@ import platform
 # Platform-specific setup
 if platform.system() == "Windows":
     from ctypes import windll
+
     windll.user32.SetProcessDPIAware()
 
-class Text():
+
+class Text:
     def __init__(self, subject):
         self.word = "Hello"
         self.subject = subject
-    
+
     def _start_root(self):
         self.root = tk.Tk()
         self.root.withdraw()  # Hide main window
@@ -24,19 +26,25 @@ class Text():
 
     def prep(self):
         self._start_root()
-        
+
         self.size = random.randint(1, 100)
-        self.x = random.randint(0, self.root.winfo_screenwidth() - self.size * len(self.word))
+        self.x = random.randint(
+            0, self.root.winfo_screenwidth() - self.size * len(self.word)
+        )
         self.y = random.randint(0, self.root.winfo_screenheight() - self.size)
 
         self.size_control = 100
-        self.x_control = int((self.root.winfo_screenwidth() - self.size_control * len(self.word)) / 2)
+        self.x_control = int(
+            (self.root.winfo_screenwidth() - self.size_control * len(self.word)) / 2
+        )
         self.y_control = int((self.root.winfo_screenheight() - self.size_control) / 2)
 
-        return f'{self.size}_{self.x}_{self.y}'
-    
+        return f"{self.size}_{self.x}_{self.y}"
+
     def show_control(self):
-        self.window.geometry(f"{self.size_control * len(self.word)}x{self.size_control}+{self.x_control}+{self.y_control}")
+        self.window.geometry(
+            f"{self.size_control * len(self.word)}x{self.size_control}+{self.x_control}+{self.y_control}"
+        )
 
         label = tk.Label(self.window, text=self.word, font=("Arial", self.size_control))
         label.pack()
@@ -48,7 +56,9 @@ class Text():
 
     def show(self):
         self._start_root()
-        self.window.geometry(f"{self.size * len(self.word)}x{self.size}+{self.x}+{self.y}")
+        self.window.geometry(
+            f"{self.size * len(self.word)}x{self.size}+{self.x}+{self.y}"
+        )
 
         label = tk.Label(self.window, text=self.word, font=("Arial", self.size))
         label.pack()
@@ -65,9 +75,10 @@ class Text():
         self.root.after(2000, self.root.destroy)
         self.root.mainloop()
 
+
 class Video:
     def __init__(self, path, do_thread):
-        try: 
+        try:
             self.stop()
         except:
             pass
@@ -85,7 +96,7 @@ class Video:
             if ret:
                 self.out.write(frame)
                 # cv2.imshow("Recording", frame)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
 
     def start(self, file_name):
@@ -95,7 +106,9 @@ class Video:
             messagebox.showerror("Error", "Cannot access the webcam")
             return
         fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.out = cv2.VideoWriter(self.path + file_name + ".avi", fourcc, 20.0, (640, 480))
+        self.out = cv2.VideoWriter(
+            self.path + file_name + ".avi", fourcc, 20.0, (640, 480)
+        )
         self.recording = True
 
         if self.do_thread:
@@ -115,16 +128,17 @@ class Video:
             self.cap.release()
         cv2.destroyAllWindows()
 
-class Photo():
+
+class Photo:
     def __init__(self):
         pass
-    
+
     def take(self):
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
             messagebox.showerror("Error", "Cannot access the webcam")
             return
-        
+
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         ret, frame = cap.read()
         if ret:
@@ -141,17 +155,18 @@ class Photo():
         cap.release()
         cv2.destroyAllWindows()
 
+
 if __name__ == "__main__":
     subject = "videos/" + "Braley_"
-    media = Video(path=subject, do_thread=True)
+    media = Video(path=subject, do_thread=False)
     display = Text(subject)
 
     print("Starting session")
-    try: 
+    try:
         while True:
             label = display.prep()
             media.start(label)
-            
+
             display.show_control()
             # time.sleep(3)
 
