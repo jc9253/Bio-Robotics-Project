@@ -1,18 +1,21 @@
 import time
+
 import pandas as pd
+
 from data_collection.data_collection_script import Video
 from PupilExtraction.avitobmp import convert_avi
+from zoom_ctrl import zoom_interface
 
 # from location_model.?
 from zoom_model import zoom_model
-from zoom_ctrl import zoom_interface
 
 if __name__ == "__main__":
     # init objects:
     avi_path = "video"
     bmap_folder = "bmap/"
     camera = Video(path=avi_path, do_thread=False)
-    """ ####testing zoom control###
+    """ 
+    ####testing zoom control###
     feature_extrac = ?()
 
     loc_model = ?()
@@ -26,9 +29,9 @@ if __name__ == "__main__":
         while True:
 
             # Take input data
-            # recording = camera.start("")  # unlabeled since inference
-            # time.sleep(2)
-            # camera.stop()
+            recording = camera.start("")  # unlabeled since inference
+            time.sleep(2)
+            camera.stop()
 
             convert_avi("", bmap_folder)  # convert avi to bit map
 
