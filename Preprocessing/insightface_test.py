@@ -66,19 +66,19 @@ for bmp_path in INPUT_ROOT.rglob("*.bmp"):
             x1, y1, x2, y2 = face.bbox.astype(int)
             score = face.det_score
 
-            # Access landmarks, embedding, attributes
-            landmarks = face.landmark_2d_106  # 106 points
-            embedding = face.embedding  # 512-dim vector
-            gender = face.gender
-            age = face.age
-
-            # Visualize
-            cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            for x, y in landmarks:
-                cv2.circle(img, (int(x), int(y)), 1, (0, 0, 255), -1)
-            print(f"BBox: {(x1,y1,x2,y2)}, Score: {score:.2f}")
-            print(f"Age: {age}, Gender: {gender}")
-            print(f"Embedding (first 5 dims): {embedding[:5]}")
+            # # Access landmarks, embedding, attributes
+            # landmarks = face.landmark_2d_106  # 106 points
+            # embedding = face.embedding  # 512-dim vector
+            # gender = face.gender
+            # age = face.age
+            #
+            # # Visualize
+            # cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            # for x, y in landmarks:
+            #     cv2.circle(img, (int(x), int(y)), 1, (0, 0, 255), -1)
+            # print(f"BBox: {(x1,y1,x2,y2)}, Score: {score:.2f}")
+            # print(f"Age: {age}, Gender: {gender}")
+            # print(f"Embedding (first 5 dims): {embedding[:5]}")
 
         # 4. Show result
         # plt.imshow(img)

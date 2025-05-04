@@ -22,10 +22,10 @@ def pupil_outline(img):
         "frame": None,  # filled later
         "Outline_conf": pupil.outline_confidence,
         "PupilDiameter": pupil.diameter(),
-        "Eyelids": pupil.eyelid,
+        # "Eyelids": pupil.eyelid,
         "RectPoints": pupil.rectPoints(),
         "Size": pupil.size,
-        "Has Outline": pupil.hasOutline(),
+        # "Has Outline": pupil.hasOutline(),
         "Major Axis": pupil.majorAxis(),
         "Minor Axis": pupil.minorAxis(),
         "Width": pupil.width(),
