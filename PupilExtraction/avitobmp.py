@@ -3,6 +3,7 @@ from pathlib import Path
 
 import cv2
 
+
 def convert_avi(video_path, output_dir):
     video_path = Path(video_path)
     output_dir = Path(output_dir)
@@ -35,7 +36,9 @@ def convert_avi(video_path, output_dir):
         print(f"Extracted {frame_idx} frames to '{output_dir}/'")
 
 
-video_path = "../data_collection/videos"
-output_dir = "../data_collection/video_frame"
+if __name__ == "__main__":
+    print("hello world")
+    video_path = "../data_collection/videos"
+    output_dir = "../data_collection/video_frame"
 
-convert_avi(video_path, output_dir)
+    convert_avi(video_path, output_dir)

@@ -8,9 +8,10 @@ from insightface.app import FaceAnalysis
 
 # Initialize face analysis model
 app = FaceAnalysis(
-    name="buffalo_l", providers=["CPUExecutionProvider"]
+    name="buffalo_l", providers=["CUDAExecutionProvider", "CPUExecutionProvider"]
 )  # 'CUDAExecutionProvider' for GPU
-app.prepare(ctx_id=-1)  # ctx_id=-1 for CPU, 0 for GPU
+# app.prepare(ctx_id=-1)  # ctx_id=-1 for CPU, 0 for GPU
+app.prepare(ctx_id=0)
 
 
 def get_face_embedding(image_path):
