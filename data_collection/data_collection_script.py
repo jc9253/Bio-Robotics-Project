@@ -18,6 +18,15 @@ class Text:
         self.word = "Hello"
         self.subject = subject
 
+        # create if file does not exist
+        try:
+            with open(self.subject + "log.csv", "x") as log:
+                header = "Timestamp,loc_x,loc_y,Size\n"
+                log.write(header)
+                log.close()
+        except FileExistsError:
+            pass
+
     def _start_root(self):
         self.root = tk.Tk()
         self.root.withdraw()  # Hide main window
@@ -65,11 +74,11 @@ class Text:
 
         self.root.after(2000, self.window.destroy)  # Destroy after 2 seconds
 
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        log_text = f"Timestamp: {timestamp}, Location: ({self.x}, {self.y}), Size: {self.size}\n"
-        # print(log_text)
+        timestamp = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        log_text = f"{timestamp}, {self.x/self.root.winfo_screenwidth()}, {self.y/self.root.winfo_screenheight()}, {self.size}\n"  # Noarmalized
+        print(self.root.winfo_screenwidth(), self.root.winfo_screenheight())
 
-        with open(self.subject + "log.txt", "a") as log:
+        with open(self.subject + "log.csv", "a") as log:
             log.write(log_text)
 
         self.root.after(2000, self.root.destroy)
@@ -146,7 +155,7 @@ class Photo:
             cv2.imwrite(filename, frame)
             # print(f"Photo saved as {filename}")
 
-            with open("log.txt", "a") as log:
+            with open("log.csv", "a") as log:
                 log.write(f"Photo taken at {timestamp}\n")
 
             cv2.imshow("Photo", frame)

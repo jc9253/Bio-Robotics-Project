@@ -4,7 +4,7 @@ import csv
 
 
 directory = "./"
-header = "Outline,Conf,PupilDiameter,Eyelids,RectPoints_0_0,RectPoints_0_1,RectPoints_1_0,RectPoints_1_1,RectPoints_2_0,RectPoints_2_1,RectPoints_3_0,RectPoints_3_1,Size_0,Size_1,Major Axis,Minor Axis,Width,Height\n"
+header = "video,frame,Outline_conf,PupilDiameter,Eyelids,RectPoints_0_0,RectPoints_0_1,RectPoints_1_0,RectPoints_1_1,RectPoints_2_0,RectPoints_2_1,RectPoints_3_0,RectPoints_3_1,Size_0,Size_1,Major Axis,Minor Axis,Width,Height\n"
 
 # Loop through all .txt files
 for filename in os.listdir(directory):

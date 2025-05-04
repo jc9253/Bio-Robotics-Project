@@ -15,7 +15,7 @@ class zoom_interface:
 
     def zoom(self, loc, mag):
         # Set center of zoom
-        self.zoom_center(loc)
+        # self.zoom_center(loc)
 
         # Set zoom in, out, or no change
         if mag < 0:

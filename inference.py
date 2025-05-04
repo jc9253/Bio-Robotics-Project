@@ -27,8 +27,8 @@ if __name__ == "__main__":
     bmap_folder = "bmap/"
     camera = Video(path=avi_path, do_thread=False)
 
-    num_features = 18
-    sequnce_len = 25
+    num_features = 17
+    sequnce_len = 39
 
     model = zm(num_features=num_features).to(device)
     model.load_state_dict(torch.load("zoom_model.pth"))
@@ -40,24 +40,26 @@ if __name__ == "__main__":
         while True:
 
             # Take input data
-            recording = camera.start("")  # unlabeled since inference
-            time.sleep(2)
-            camera.stop()
+            # recording = camera.start("")  # unlabeled since inference
+            # time.sleep(2)
+            # camera.stop()
 
-            convert_avi("", bmap_folder)  # convert avi to bit map
+            # convert_avi("", bmap_folder)  # convert avi to bit map
 
-            """ ####testing zoom control###
+            """####testing zoom control###
             # Run through preprocessing
             # Returns features which is a time series of:
             # - time
             # - pupil size
-            # - 
+            # -
 
             features = feature_extrac.?(recording)
             """  ####testing zoom control###
 
-            features = pd.read_csv("PupilExtraction/output.csv")
-            features = torch.from_numpy(features.values)
+            # features = pd.read_csv("PupilExtraction/output.csv")
+            # features = torch.from_numpy(features.values)
+
+            features = torch.randn(sequnce_len, num_features)
             features = features.float()
 
             size, loc_x, loc_y = zoom_model.infer(model, features, device)
